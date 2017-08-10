@@ -15,7 +15,7 @@ def entry_page():
 
 @app.route('/predict_object/', methods=['GET', 'POST'])
 def render_message():
-    saved_model = '/Users/andrew/Desktop/cifar/saved_models/cifar100.h5'
+    saved_model = 'saved_models/cifar100.h5'
     model = load_model(saved_model)
     
     try:
@@ -23,7 +23,7 @@ def render_message():
         image = io.imread(image_url)
         image_small = misc.imresize(image,(32,32,3))/255.
         pred = c100_classify(image_small, model)
-            message = "OK, here's what I think this is:"
+        message = "OK, here's what I think this is:"
     except:
         message = "Something has gone completely wrong, what did you do?!  Try another image."
     data = [{'name':x, 'probability':y} for x,y in zip(pred.iloc[:,1],pred.iloc[:,0])]
