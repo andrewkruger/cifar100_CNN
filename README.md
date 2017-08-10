@@ -5,6 +5,6 @@ This repo shows a convolution neural network (CNN) built for the CIFAR-100 datas
 Here is a demonstration of the app, showing the CNN recognizes both the bridge and castle:
 
 <p align="center">
-<iframe src='https://gfycat.com/ifr/LikelyAdorableKronosaurus' frameborder='0' scrolling='no' width='600' height='375' allowfullscreen></iframe>
+<img src="https://raw.githubusercontent.com/andrewkruger/cifar100_CNN/master/LikelyAdorableKronosaurus.gif">
 </p>
 
