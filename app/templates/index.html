@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<html>
+<head>
+	<title>CIFAR 100</title>
+</head>
+
+
+<style>
+body {
+  font: 20px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+  </style>
+
+
+<body>
+
+<p>Enter the URL to an image, and I'll try to tell you what it is.</p>
+
+<form action="/predict_object/" method="post">
+Image URL:<br>
+  <input type="text" name="image_url" style="width: 600px;">
+<br>
+
+<button type="submit" style="font:20px">
+  What is this?!
+</button>
+</form>
+
+
+{% if message %}
+<p>{{message}}</p><br>
+
+
+  
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script>
+    //JS to go here
+
+
+var data = {{ data|safe }}
+
+
+
+{% if data %}
+
+// set the dimensions of the canvas
+var margin = {top: 20, right: 20, bottom: 130, left: 100},
+    width = 600 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .ticks(5);
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([10, 0])
+  .html(function(d) {
+    return "<strong>Probability:</strong> <span style='color:red'>" + d.frequency + "</span>";
+  })
+
+x.domain(data.map(function(d) { return d.name; }));
+y.domain([0, 1]);
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+.append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
+
+svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.name); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.probability); })
+      .attr("height", function(d) { return height - y(d.probability); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -65)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Probability");
+
+
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.name); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.probability); })
+      .attr("height", function(d) { return height - y(d.probability); });
+
+
+{% endif %}
+
+</script>
+
+<p><img src='{{image}}' style='width:500px'><img></p>
+{% endif %}
+
+</body>
+</html>
