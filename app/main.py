@@ -24,9 +24,10 @@ def render_message():
         image_small = misc.imresize(image,(32,32,3))/255.
         pred = c100_classify(image_small, model)
         message = "OK, here's what I think this is:"
+        data = [{'name':x, 'probability':y} for x,y in zip(pred.iloc[:,1],pred.iloc[:,0])]
     except:
         message = "Something has gone completely wrong, what did you do?!  Try another image."
-    data = [{'name':x, 'probability':y} for x,y in zip(pred.iloc[:,1],pred.iloc[:,0])]
+        data = [{'name':'Error', 'probability':0}]*5
 
     return render_template('index.html',
                             message=message,
