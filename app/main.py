@@ -27,7 +27,7 @@ def render_message():
         data = [{'name':x, 'probability':y} for x,y in zip(pred.iloc[:,1],pred.iloc[:,0])]
     except:
         message = "Something has gone completely wrong, what did you do?!  Try another image."
-        data = [{'name':'Error', 'probability':0}]*5
+        data = [{'name':'Error', 'probability':0}]
 
     return render_template('index.html',
                             message=message,
